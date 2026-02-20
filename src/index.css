@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+path {
+  fill: #f3f4f6;
+  stroke: #ffffff;
+  stroke-width: 1;
+  transition: fill 0.2s ease;
+}
+
+path:hover {
+  fill: #ef4444;
+}
+
+.map-container {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin: 50px auto;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  text-align: center;
+}
+
+.us-map {
+  width: 100%;
+  height: auto;
+  pointer-events: all;
+}
+
+.tooltip {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #222;
+  color: white;
+  font-size: 12px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+}
