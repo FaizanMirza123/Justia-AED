@@ -107,7 +107,7 @@ const Header = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (suggestions.length > 0) {
-      navigate(`/states/${suggestions[0].slug}`);
+      navigate(`/aed-laws/${suggestions[0].slug}`);
       setQuery("");
       setShowSuggestions(false);
     }
