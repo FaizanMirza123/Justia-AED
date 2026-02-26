@@ -30,18 +30,18 @@ const CATEGORIES = [
 /* Nav items */
 const NAV_ITEMS = [
   { label: "AED Accessories", href: "https://dipietroassoc.com/shop/" },
-  { label: "AED Navigator",   href: "https://dipietroassoc.com/aednavigator/" },
-  { label: "About Us",        href: "https://dipietroassoc.com/aboutus/" },
-  { label: "Classes",         href: "https://dipietroassoc.com/classes/" },
+  { label: "AED Navigator", href: "https://dipietroassoc.com/aednavigator/" },
+  { label: "About Us", href: "https://dipietroassoc.com/aboutus/" },
+  { label: "Classes", href: "https://dipietroassoc.com/classes/" },
   {
     label: "Resources",
     href: "#",
     children: [
-      { label: "Videos",    href: "https://dipietroassoc.com/videos/" },
+      { label: "Videos", href: "https://dipietroassoc.com/videos/" },
       { label: "Our Blogs", href: "https://dipietroassoc.com/our-blogs/" },
     ],
   },
-  { label: "FAQ",        href: "https://dipietroassoc.com/faq/" },
+  { label: "FAQ", href: "https://dipietroassoc.com/faq/" },
   { label: "Contact Us", href: "https://dipietroassoc.com/contact-us/" },
 ];
 
@@ -337,8 +337,6 @@ const Header = () => {
                       <a
                         key={child.label}
                         href={child.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
                         style={{
                           display: "block",
                           padding: "8px 16px",
@@ -367,8 +365,6 @@ const Header = () => {
                 <a
                   key={item.label}
                   href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="relative group"
                   style={{
                     display: "flex",
@@ -427,9 +423,9 @@ const Header = () => {
         <div className="md:hidden bg-[#111686] border-t border-[#0A1A33]">
           <nav className="flex flex-col p-4 space-y-2">
             {NAV_ITEMS.map((item) => (
-              <Link
+              <a
                 key={item.label}
-                to={item.href}
+                href={item.href}
                 style={{
                   color: "#FFFFFF",
                   fontSize: "16px",
@@ -439,7 +435,7 @@ const Header = () => {
                 onClick={() => setMobileOpen(false)}
               >
                 {item.label}
-              </Link>
+              </a>
             ))}
           </nav>
         </div>
