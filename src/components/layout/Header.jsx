@@ -114,7 +114,7 @@ const Header = () => {
   };
 
   const handleSelect = (slug) => {
-    navigate(`/states/${slug}`);
+    navigate(`/aed-laws/${slug}`);
     setQuery("");
     setShowSuggestions(false);
   };
