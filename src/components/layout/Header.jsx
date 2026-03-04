@@ -126,9 +126,9 @@ const Header = () => {
         className="w-full border-b"
         style={{ backgroundColor: "#d6dcea", borderColor: "#0A1A33" }}
       >
-        <div className="mx-auto p-[10px] flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="mx-auto px-[10px] py-[10px] flex flex-col md:flex-row justify-between items-center gap-4 w-full">
           {/* Logo (50%) */}
-          <div className="flex-1 flex items-center p-[10px]">
+          <div className="flex-1 flex items-center p-[10px] w-full md:w-auto">
             <Link to="/">
               <img
                 src="logo.png"
@@ -141,10 +141,10 @@ const Header = () => {
           </div>
 
           {/* Search bar (50%) */}
-          <div className="flex-1 flex items-center justify-end p-[10px]">
+          <div className="flex-1 flex items-center justify-end p-[10px] w-full md:w-auto">
             <div
               ref={searchRef}
-              style={{ position: "relative", width: "738px" }}
+              style={{ position: "relative", width: "100%", maxWidth: "738px" }}
             >
               <form
                 onSubmit={handleSearch}
