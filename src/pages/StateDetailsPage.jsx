@@ -137,22 +137,41 @@ function formatTitle(title) {
   return title.replace(/[\s\(\[]+$/, "").trim();
 }
 
+const WORD_LIMIT = 150;
+
 function formatDescription(text) {
   if (!text) return "";
-
-  // Truncate at 500 words
-  const words = text.split(/\s+/);
-  let processed =
-    words.length > 500 ? words.slice(0, 500).join(" ") + "…" : text;
-
   // Insert a blank line before every (1), (2)…, (a), (b)… list marker
-  // so that whitespace-pre-line renders them as separate paragraphs
-  processed = processed.replace(
-    /[ \t]*(\(\d+\)|\([a-zA-Z]\))[ \t]*/g,
-    "\n\n$1 ",
-  );
+  return text.replace(/[ \t]*(\(\d+\)|\([a-zA-Z]\))[ \t]*/g, "\n\n$1 ").trim();
+}
 
-  return processed.trim();
+function LawDescription({ text }) {
+  const [expanded, setExpanded] = useState(false);
+  if (!text) return null;
+
+  const formatted = formatDescription(text);
+  const words = formatted.split(/\s+/);
+  const isLong = words.length > WORD_LIMIT;
+  const displayed =
+    isLong && !expanded
+      ? words.slice(0, WORD_LIMIT).join(" ") + "\u2026"
+      : formatted;
+
+  return (
+    <div>
+      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+        {displayed}
+      </p>
+      {isLong && (
+        <button
+          onClick={() => setExpanded((prev) => !prev)}
+          className="mt-2 text-sm font-medium text-[#301a41] hover:underline focus:outline-none"
+        >
+          {expanded ? "Read less" : "Read more"}
+        </button>
+      )}
+    </div>
+  );
 }
 
 // ─── Component ─────────────────────────────────────────────────────────────
@@ -462,9 +481,7 @@ export default function StateDetailsPage() {
                           formatTitle(law.title)
                         )}
                       </h3>
-                      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                        {formatDescription(law.description)}
-                      </p>
+                      <LawDescription text={law.description} />
                     </div>
                   ))}
                 </div>
