@@ -183,6 +183,7 @@ export default function StateDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [activeTopic, setActiveTopic] = useState(null);
   const [activeIndustry, setActiveIndustry] = useState(null);
+  const [filterOpen, setFilterOpen] = useState(false);
   const navigate = useNavigate();
 
   const hasFilter = activeTopic !== null || activeIndustry !== null;
@@ -209,8 +210,8 @@ export default function StateDetailsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-6">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+      <div className="min-h-screen bg-gray-50 py-12 px-4">
+        <div className="max-w-[90rem] mx-auto bg-white rounded-2xl shadow-lg p-8">
           <p className="text-center text-gray-600">Loading...</p>
         </div>
       </div>
@@ -219,8 +220,8 @@ export default function StateDetailsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-6">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+      <div className="min-h-screen bg-gray-50 py-12 px-4">
+        <div className="max-w-[90rem] mx-auto bg-white rounded-2xl shadow-lg p-8">
           <button
             onClick={() => navigate(-1)}
             className="mb-6 px-4 py-2 bg-[#111686] text-white rounded-lg hover:bg-[#0d1270] transition-colors duration-200"
@@ -241,8 +242,8 @@ export default function StateDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-6">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+    <div className="min-h-screen bg-gray-50 py-12 px-4">
+      <div className="max-w-[90rem] mx-auto">
         {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
@@ -263,11 +264,111 @@ export default function StateDetailsPage() {
           </div>
         )}
 
-        {/* ── Filter Section ── */}
-        <div className="mb-8 border border-gray-200 rounded-xl overflow-hidden">
-          {/* Filter header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-[#f0f2fd] border-b border-gray-200">
-            <div className="flex items-center gap-2 text-[#111686] font-semibold text-sm">
+        {/* ── Two-column layout: Laws + Filter Sidebar ── */}
+        <div className="flex gap-4 items-start">
+          {/* Laws Column */}
+          <div className="flex-1 min-w-0 bg-white rounded-2xl shadow-lg p-8">
+            {stateData.laws && stateData.laws.length > 0 ? (
+              (() => {
+                const seenTitles = new Set();
+                const uniqueLaws = stateData.laws.filter((law) => {
+                  const key = (law.title || "").trim().toLowerCase();
+                  if (seenTitles.has(key)) return false;
+                  seenTitles.add(key);
+                  return true;
+                });
+
+                const visibleLaws = uniqueLaws.filter((law) => {
+                  const cls = classifyLaw(law);
+                  if (!cls.include) return false;
+                  if (activeTopic && !cls.topics.includes(activeTopic))
+                    return false;
+                  if (activeIndustry && !cls.industries.includes(activeIndustry))
+                    return false;
+                  return true;
+                });
+
+                return visibleLaws.length > 0 ? (
+                  <div>
+                    {/* Active filter badges */}
+                    {hasFilter && (
+                      <div className="flex flex-wrap items-center gap-2 mb-5">
+                        <span className="text-sm text-gray-500">Showing:</span>
+                        {activeTopic && (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#111686] text-white text-xs rounded-full font-medium">
+                            {activeTopic}
+                            <button
+                              onClick={() => setActiveTopic(null)}
+                              className="hover:text-gray-300"
+                              aria-label="Clear topic filter"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        )}
+                        {activeIndustry && (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#0d1270] text-white text-xs rounded-full font-medium">
+                            {activeIndustry}
+                            <button
+                              onClick={() => setActiveIndustry(null)}
+                              className="hover:text-gray-300"
+                              aria-label="Clear industry filter"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    <h2 className="text-2xl font-semibold text-[#111686] mb-6">
+                      State AED Laws
+                    </h2>
+                    <div className="space-y-6">
+                      {visibleLaws.map((law, index) => (
+                        <div
+                          key={index}
+                          className="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0"
+                        >
+                          <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                            {law.justia_url ? (
+                              <a
+                                href={law.justia_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-[#111686] hover:underline"
+                              >
+                                {formatTitle(law.title)}
+                              </a>
+                            ) : (
+                              formatTitle(law.title)
+                            )}
+                          </h3>
+                          <LawDescription text={law.description} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-gray-600 italic">
+                    No laws found for the selected filters.
+                  </p>
+                );
+              })()
+            ) : (
+              <p className="text-gray-600 italic">
+                No specific laws found for this state.
+              </p>
+            )}
+          </div>
+
+          {/* ── Filter Sidebar ── */}
+          <div className="w-56 flex-shrink-0 sticky top-6">
+            {/* Filter toggle button */}
+            <button
+              onClick={() => setFilterOpen((prev) => !prev)}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#111686] text-white rounded-lg shadow-lg hover:bg-[#0d1270] transition-colors duration-200 text-sm font-medium"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4"
@@ -282,155 +383,113 @@ export default function StateDetailsPage() {
                   d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"
                 />
               </svg>
-              Filter Laws
-            </div>
-            {hasFilter && (
-              <button
-                onClick={clearFilters}
-                className="text-xs text-[#111686] hover:underline font-medium"
+              {hasFilter ? "Filtered" : "Filter"}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className={`h-4 w-4 transition-transform duration-200 ${filterOpen ? "rotate-180" : ""}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                Clear all
-              </button>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {/* Filter panel */}
+            {filterOpen && (
+              <div className="mt-2 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                {/* Topic section */}
+                <div className="px-4 py-2.5 bg-[#f0f2fd] border-b border-gray-200">
+                  <p className="text-xs font-bold uppercase tracking-wide text-[#111686]">
+                    Topic
+                  </p>
+                </div>
+                <ul className="divide-y divide-gray-100">
+                  <li>
+                    <button
+                      onClick={() => setActiveTopic(null)}
+                      className={`w-full text-left px-4 py-2 text-sm transition-colors duration-150 ${
+                        activeTopic === null
+                          ? "bg-[#111686] text-white font-semibold"
+                          : "hover:bg-[#f0f2fd] text-gray-700"
+                      }`}
+                    >
+                      All Topics
+                    </button>
+                  </li>
+                  {ALL_TOPICS.map((topic) => (
+                    <li key={topic}>
+                      <button
+                        onClick={() =>
+                          setActiveTopic((prev) => (prev === topic ? null : topic))
+                        }
+                        className={`w-full text-left px-4 py-2 text-sm transition-colors duration-150 ${
+                          activeTopic === topic
+                            ? "bg-[#111686] text-white font-semibold"
+                            : "hover:bg-[#f0f2fd] text-gray-700"
+                        }`}
+                      >
+                        {topic}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Industry section */}
+                <div className="px-4 py-2.5 bg-[#f0f2fd] border-t border-b border-gray-200">
+                  <p className="text-xs font-bold uppercase tracking-wide text-[#111686]">
+                    Industry
+                  </p>
+                </div>
+                <ul className="max-h-52 overflow-y-auto divide-y divide-gray-100">
+                  <li>
+                    <button
+                      onClick={() => setActiveIndustry(null)}
+                      className={`w-full text-left px-4 py-2 text-sm transition-colors duration-150 ${
+                        activeIndustry === null
+                          ? "bg-[#111686] text-white font-semibold"
+                          : "hover:bg-[#f0f2fd] text-gray-700"
+                      }`}
+                    >
+                      All Industries
+                    </button>
+                  </li>
+                  {ALL_INDUSTRIES.map((ind) => (
+                    <li key={ind}>
+                      <button
+                        onClick={() =>
+                          setActiveIndustry((prev) => (prev === ind ? null : ind))
+                        }
+                        className={`w-full text-left px-4 py-2 text-sm transition-colors duration-150 ${
+                          activeIndustry === ind
+                            ? "bg-[#111686] text-white font-semibold"
+                            : "hover:bg-[#f0f2fd] text-gray-700"
+                        }`}
+                      >
+                        {ind}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Clear all */}
+                {hasFilter && (
+                  <div className="px-4 py-2.5 bg-gray-50 border-t border-gray-200">
+                    <button
+                      onClick={() => {
+                        clearFilters();
+                        setFilterOpen(false);
+                      }}
+                      className="text-xs text-[#111686] hover:underline font-medium"
+                    >
+                      Clear all filters
+                    </button>
+                  </div>
+                )}
+              </div>
             )}
           </div>
-
-          {/* Topic row */}
-          <div className="px-4 py-3 border-b border-gray-100">
-            <p className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-2">
-              Topic
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setActiveTopic(null)}
-                className={`px-3 py-1 text-sm rounded-full border transition-colors duration-150 ${
-                  activeTopic === null
-                    ? "bg-[#111686] text-white border-[#111686]"
-                    : "text-gray-600 border-gray-300 hover:border-[#111686] hover:text-[#111686]"
-                }`}
-              >
-                All
-              </button>
-              {ALL_TOPICS.map((topic) => (
-                <button
-                  key={topic}
-                  onClick={() =>
-                    setActiveTopic((prev) => (prev === topic ? null : topic))
-                  }
-                  className={`px-3 py-1 text-sm rounded-full border transition-colors duration-150 ${
-                    activeTopic === topic
-                      ? "bg-[#111686] text-white border-[#111686]"
-                      : "text-gray-600 border-gray-300 hover:border-[#111686] hover:text-[#111686]"
-                  }`}
-                >
-                  {topic}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Industry row */}
-          <div className="px-4 py-3">
-            <p className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-2">
-              Industry
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setActiveIndustry(null)}
-                className={`px-3 py-1 text-sm rounded-full border transition-colors duration-150 ${
-                  activeIndustry === null
-                    ? "bg-[#111686] text-white border-[#111686]"
-                    : "text-gray-600 border-gray-300 hover:border-[#111686] hover:text-[#111686]"
-                }`}
-              >
-                All
-              </button>
-              {ALL_INDUSTRIES.map((ind) => (
-                <button
-                  key={ind}
-                  onClick={() =>
-                    setActiveIndustry((prev) => (prev === ind ? null : ind))
-                  }
-                  className={`px-3 py-1 text-sm rounded-full border transition-colors duration-150 ${
-                    activeIndustry === ind
-                      ? "bg-[#111686] text-white border-[#111686]"
-                      : "text-gray-600 border-gray-300 hover:border-[#111686] hover:text-[#111686]"
-                  }`}
-                >
-                  {ind}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
-
-        {/* Laws Section */}
-        {stateData.laws && stateData.laws.length > 0 ? (
-          (() => {
-            // Deduplicate by normalised title (case-insensitive, trimmed)
-            const seenTitles = new Set();
-            const uniqueLaws = stateData.laws.filter((law) => {
-              const key = (law.title || "").trim().toLowerCase();
-              if (seenTitles.has(key)) return false;
-              seenTitles.add(key);
-              return true;
-            });
-
-            // Classify each law and apply topic + industry filters
-            const visibleLaws = uniqueLaws.filter((law) => {
-              const cls = classifyLaw(law);
-              if (!cls.include) return false;
-              if (activeTopic && !cls.topics.includes(activeTopic))
-                return false;
-              if (activeIndustry && !cls.industries.includes(activeIndustry))
-                return false;
-              return true;
-            });
-
-            return visibleLaws.length > 0 ? (
-              <div className="mb-8">
-                <h2 className="text-2xl font-semibold text-[#111686] mb-6">
-                  State AED Laws
-                </h2>
-                <div className="space-y-6">
-                  {visibleLaws.map((law, index) => (
-                    <div
-                      key={index}
-                      className="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0"
-                    >
-                      <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                        {law.justia_url ? (
-                          <a
-                            href={law.justia_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#111686] hover:underline"
-                          >
-                            {formatTitle(law.title)}
-                          </a>
-                        ) : (
-                          formatTitle(law.title)
-                        )}
-                      </h3>
-                      <LawDescription text={law.description} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="mb-8">
-                <p className="text-gray-600 italic">
-                  No laws found for the selected filters.
-                </p>
-              </div>
-            );
-          })()
-        ) : (
-          <div className="mb-8">
-            <p className="text-gray-600 italic">
-              No specific laws found for this state.
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
