@@ -183,7 +183,6 @@ export default function StateDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [activeTopic, setActiveTopic] = useState(null);
   const [activeIndustry, setActiveIndustry] = useState(null);
-  const [filterOpen, setFilterOpen] = useState(false);
   const navigate = useNavigate();
 
   const hasFilter = activeTopic !== null || activeIndustry !== null;
@@ -210,8 +209,8 @@ export default function StateDetailsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4">
-        <div className="max-w-[90rem] mx-auto bg-white rounded-2xl shadow-lg p-8">
+      <div className="min-h-screen bg-gray-50 py-12 px-4 md:px-12 lg:px-24 xl:px-48">
+        <div className="max-w-[75rem] mx-auto bg-white rounded-2xl shadow-lg p-8">
           <p className="text-center text-gray-600">Loading...</p>
         </div>
       </div>
@@ -220,8 +219,8 @@ export default function StateDetailsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4">
-        <div className="max-w-[90rem] mx-auto bg-white rounded-2xl shadow-lg p-8">
+      <div className="min-h-screen bg-gray-50 py-12 px-4 md:px-12 lg:px-24 xl:px-48">
+        <div className="max-w-[75rem] mx-auto bg-white rounded-2xl shadow-lg p-8">
           <button
             onClick={() => navigate(-1)}
             className="mb-6 px-4 py-2 bg-[#111686] text-white rounded-lg hover:bg-[#0d1270] transition-colors duration-200"
@@ -242,8 +241,8 @@ export default function StateDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-[90rem] mx-auto">
+    <div className="min-h-screen bg-gray-50 py-12 px-4 md:px-12 lg:px-24 xl:px-48">
+      <div className="max-w-[75rem] mx-auto">
         {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
@@ -265,9 +264,9 @@ export default function StateDetailsPage() {
         )}
 
         {/* ── Two-column layout: Laws + Filter Sidebar ── */}
-        <div className="flex gap-4 items-start">
+        <div className="flex flex-col md:flex-row gap-8 items-start">
           {/* Laws Column */}
-          <div className="flex-1 min-w-0 bg-white rounded-2xl shadow-lg p-8">
+          <div className="flex-1 min-w-0 bg-white rounded-2xl shadow-lg p-6 lg:p-8 order-2 md:order-1">
             {stateData.laws && stateData.laws.length > 0 ? (
               (() => {
                 const seenTitles = new Set();
@@ -363,42 +362,10 @@ export default function StateDetailsPage() {
           </div>
 
           {/* ── Filter Sidebar ── */}
-          <div className="w-56 flex-shrink-0 sticky top-6">
-            {/* Filter toggle button */}
-            <button
-              onClick={() => setFilterOpen((prev) => !prev)}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#111686] text-white rounded-lg shadow-lg hover:bg-[#0d1270] transition-colors duration-200 text-sm font-medium"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"
-                />
-              </svg>
-              {hasFilter ? "Filtered" : "Filter"}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className={`h-4 w-4 transition-transform duration-200 ${filterOpen ? "rotate-180" : ""}`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-
+          <div className="w-full md:w-64 flex-shrink-0 sticky top-6 order-1 md:order-2">
             {/* Filter panel */}
-            {filterOpen && (
-              <div className="mt-2 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-                {/* Topic section */}
+            <div className="bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+              {/* Topic section */}
                 <div className="px-4 py-2.5 bg-[#f0f2fd] border-b border-gray-200">
                   <p className="text-xs font-bold uppercase tracking-wide text-[#111686]">
                     Topic
@@ -478,7 +445,6 @@ export default function StateDetailsPage() {
                     <button
                       onClick={() => {
                         clearFilters();
-                        setFilterOpen(false);
                       }}
                       className="text-xs text-[#111686] hover:underline font-medium"
                     >
@@ -487,7 +453,6 @@ export default function StateDetailsPage() {
                   </div>
                 )}
               </div>
-            )}
           </div>
         </div>
       </div>

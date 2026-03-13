@@ -131,7 +131,7 @@ const Header = () => {
           <div className="flex-1 flex items-center p-[10px] w-full md:w-auto">
             <Link to="/">
               <img
-                src="logo.png"
+                src="/logo.png"
                 width="258.3px"
                 height="87.65px"
                 alt="AED Logo"
