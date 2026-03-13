@@ -364,95 +364,78 @@ export default function StateDetailsPage() {
           {/* ── Filter Sidebar ── */}
           <div className="w-full md:w-64 flex-shrink-0 sticky top-6 order-1 md:order-2">
             {/* Filter panel */}
-            <div className="bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+            <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-5 flex flex-col gap-6">
+              
               {/* Topic section */}
-                <div className="px-4 py-2.5 bg-[#f0f2fd] border-b border-gray-200">
-                  <p className="text-xs font-bold uppercase tracking-wide text-[#111686]">
-                    Topic
-                  </p>
-                </div>
-                <ul className="divide-y divide-gray-100">
-                  <li>
-                    <button
-                      onClick={() => setActiveTopic(null)}
-                      className={`w-full text-left px-4 py-2 text-sm transition-colors duration-150 ${
-                        activeTopic === null
-                          ? "bg-[#111686] text-white font-semibold"
-                          : "hover:bg-[#f0f2fd] text-gray-700"
-                      }`}
-                    >
-                      All Topics
-                    </button>
-                  </li>
+              <div>
+                <h3 className="text-base font-bold text-gray-900 mb-3 border-b border-gray-200 pb-2">Topic</h3>
+                <div className="flex flex-col gap-2.5">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="radio"
+                      name="topic"
+                      checked={activeTopic === null}
+                      onChange={() => setActiveTopic(null)}
+                      className="w-4 h-4 text-[#111686] border-gray-300 focus:ring-[#111686] cursor-pointer"
+                    />
+                    <span className={`text-sm ${activeTopic === null ? 'font-medium text-gray-900' : 'text-gray-600 group-hover:text-gray-900'}`}>All Topics</span>
+                  </label>
                   {ALL_TOPICS.map((topic) => (
-                    <li key={topic}>
-                      <button
-                        onClick={() =>
-                          setActiveTopic((prev) => (prev === topic ? null : topic))
-                        }
-                        className={`w-full text-left px-4 py-2 text-sm transition-colors duration-150 ${
-                          activeTopic === topic
-                            ? "bg-[#111686] text-white font-semibold"
-                            : "hover:bg-[#f0f2fd] text-gray-700"
-                        }`}
-                      >
-                        {topic}
-                      </button>
-                    </li>
+                    <label key={topic} className="flex items-center gap-3 cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="topic"
+                        checked={activeTopic === topic}
+                        onChange={() => setActiveTopic(topic)}
+                        className="w-4 h-4 text-[#111686] border-gray-300 focus:ring-[#111686] cursor-pointer"
+                      />
+                      <span className={`text-sm ${activeTopic === topic ? 'font-medium text-gray-900' : 'text-gray-600 group-hover:text-gray-900'}`}>{topic}</span>
+                    </label>
                   ))}
-                </ul>
-
-                {/* Industry section */}
-                <div className="px-4 py-2.5 bg-[#f0f2fd] border-t border-b border-gray-200">
-                  <p className="text-xs font-bold uppercase tracking-wide text-[#111686]">
-                    Industry
-                  </p>
                 </div>
-                <ul className="max-h-52 overflow-y-auto divide-y divide-gray-100">
-                  <li>
-                    <button
-                      onClick={() => setActiveIndustry(null)}
-                      className={`w-full text-left px-4 py-2 text-sm transition-colors duration-150 ${
-                        activeIndustry === null
-                          ? "bg-[#111686] text-white font-semibold"
-                          : "hover:bg-[#f0f2fd] text-gray-700"
-                      }`}
-                    >
-                      All Industries
-                    </button>
-                  </li>
-                  {ALL_INDUSTRIES.map((ind) => (
-                    <li key={ind}>
-                      <button
-                        onClick={() =>
-                          setActiveIndustry((prev) => (prev === ind ? null : ind))
-                        }
-                        className={`w-full text-left px-4 py-2 text-sm transition-colors duration-150 ${
-                          activeIndustry === ind
-                            ? "bg-[#111686] text-white font-semibold"
-                            : "hover:bg-[#f0f2fd] text-gray-700"
-                        }`}
-                      >
-                        {ind}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Clear all */}
-                {hasFilter && (
-                  <div className="px-4 py-2.5 bg-gray-50 border-t border-gray-200">
-                    <button
-                      onClick={() => {
-                        clearFilters();
-                      }}
-                      className="text-xs text-[#111686] hover:underline font-medium"
-                    >
-                      Clear all filters
-                    </button>
-                  </div>
-                )}
               </div>
+
+              {/* Industry section */}
+              <div>
+                <h3 className="text-base font-bold text-gray-900 mb-3 border-b border-gray-200 pb-2">Industry</h3>
+                <div className="flex flex-col gap-2.5 max-h-64 overflow-y-auto pr-2">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="radio"
+                      name="industry"
+                      checked={activeIndustry === null}
+                      onChange={() => setActiveIndustry(null)}
+                      className="w-4 h-4 text-[#111686] border-gray-300 focus:ring-[#111686] cursor-pointer"
+                    />
+                    <span className={`text-sm ${activeIndustry === null ? 'font-medium text-gray-900' : 'text-gray-600 group-hover:text-gray-900'}`}>All Industries</span>
+                  </label>
+                  {ALL_INDUSTRIES.map((ind) => (
+                    <label key={ind} className="flex items-center gap-3 cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="industry"
+                        checked={activeIndustry === ind}
+                        onChange={() => setActiveIndustry(ind)}
+                        className="w-4 h-4 text-[#111686] border-gray-300 focus:ring-[#111686] cursor-pointer"
+                      />
+                      <span className={`text-sm ${activeIndustry === ind ? 'font-medium text-gray-900' : 'text-gray-600 group-hover:text-gray-900'}`}>{ind}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Clear all */}
+              {hasFilter && (
+                <div className="pt-4 border-t border-gray-100">
+                  <button
+                    onClick={clearFilters}
+                    className="w-full py-2 px-4 text-sm font-semibold text-white bg-[#111686] hover:bg-[#0d1270] rounded-lg transition-colors duration-200"
+                  >
+                    Clear all filters
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
