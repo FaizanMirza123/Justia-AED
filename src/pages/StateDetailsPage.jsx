@@ -141,8 +141,36 @@ const WORD_LIMIT = 150;
 
 function formatDescription(text) {
   if (!text) return "";
-  // Insert a blank line before every (1), (2)…, (a), (b)… list marker
-  return text.replace(/[ \t]*(\(\d+\)|\([a-zA-Z]\))[ \t]*/g, "\n\n$1 ").trim();
+  
+  // Collapse all continuous whitespace and newlines from the DB to standard spacing
+  let cleaned = text.replace(/\s+/g, " ").trim();
+
+  // Find list markers like (1), (a), (A), (i), (ii)
+  // ONLY split them into a new line if they immediately follow punctuation (meaning they aren't inline references)
+  cleaned = cleaned.replace(/([.:;])\s+(\([a-zA-Z0-9]{1,5}\))\s+(?=[A-Za-z])/g, "$1\n$2 ");
+
+  const fragments = cleaned.split('\n').map(l => l.trim()).filter(Boolean);
+  
+  const finalLines = [];
+  for (let line of fragments) {
+    // Clean endings: convert trailing "; and", "; or", "and", "or", or ";" into a clean period.
+    line = line.replace(/[;:]?\s*\b(and|or)\b\s*$/i, '.').replace(/;\s*$/, '.');
+    
+    // Ignore lines that evaluate to just a marker
+    if (/^\([a-zA-Z0-9]{1,5}\)\s*[.,;:]*$/.test(line)) continue;
+    
+    // Clean up specific known crawler artifact fragments
+    if (/^\([a-zA-Z0-9]{1,5}\)\s*[,.:;]?\s*(and|or|of\s+Section|Pursuant\s+to\s+subdivision)\b/i.test(line) && line.length < 80) continue;
+    if (/^\([a-zA-Z0-9]{1,5}\)\s*,\s*and\s+complies\s+with\s+subdivision/i.test(line)) continue;
+
+    // Deduplicate identical sequential sentences
+    if (finalLines.length > 0 && finalLines[finalLines.length - 1] === line) continue;
+
+    finalLines.push(line);
+  }
+
+  // Use exactly double newlines to render as a single empty line gap between paragraphs
+  return finalLines.join('\n\n');
 }
 
 function LawDescription({ text }) {
