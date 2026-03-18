@@ -2,7 +2,7 @@
 // AED LAWS API - Backend Integration
 // ===========================
 
-const API_BASE_URL = 'https://justia.dipietroassociates.com/api';
+const API_BASE_URL = 'https://justia.dipietroassociates.com/api'; // Update with your backend API URL
 
 /**
  * Fetches all states from the backend API
