@@ -80,6 +80,26 @@ const INDUSTRY_KEYWORDS = {
     "interscholastic",
     "youth program",
   ],
+  "Electrical Co-ops / Utilities": [
+    "electric cooperative",
+    "electrical cooperative",
+    "electric co-op",
+    "electric utility",
+    "public utility",
+    "utility company",
+    "power company",
+    "rural electric",
+  ],
+  "Public Pools": [
+    "public pool",
+    "swimming pool",
+    "aquatic facility",
+    "aquatic center",
+    "natatorium",
+    "community pool",
+    "public swimming",
+    "pool facility",
+  ],
 };
 
 // Signals that the law is broad / general-industry
