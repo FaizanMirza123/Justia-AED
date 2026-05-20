@@ -89,8 +89,14 @@ const INDUSTRY_KEYWORDS = {
     "utility company",
     "power company",
     "rural electric",
+    "electric",
+    "electricity",
+    "electrical",
+    
   ],
   "Public Pools": [
+    "pool",
+    "swimming",
     "public pool",
     "swimming pool",
     "aquatic facility",
